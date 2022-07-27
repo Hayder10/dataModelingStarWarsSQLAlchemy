@@ -8,13 +8,15 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Follower(Base):
-    __tablename__ = 'follower'
+class Favorites(Base):
+    __tablename__ = 'favorites'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    ignore = Column(Integer,primary_key=True)
-    user_from_id = Column(Integer,ForeignKey('user.id'))
-    user_to_id = Column(Integer,ForeignKey('user.id'))
+    id = Column(Integer,primary_key=True)
+    planet_id = Column(Integer,ForeignKey('planets.id')) #Foreign key of planets.id
+    character_id = Column(Integer,ForeignKey('characters.id')) #Foreign key of characters.id
+    user_id = Column(Integer,ForeignKey('user.id')) #Foreign key of user.id
+    vehicle_id = Column(Integer,ForeignKey('vehicles.id')) #Foreign key of vehicles.id
 
 
 class User(Base):
@@ -23,33 +25,37 @@ class User(Base):
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     username = Column(String(250))
-    firstname = Column(String(250))
-    lastname = Column(String(250))
-    email = Column(String(250), ForeignKey('person.id'))
-    followers = relationship('Follower')
-    comment = relationship('Comment')
-    post = relationship('Post')
+    password = Column(String(250))
+    email = Column(String(250), unique=True)
 
-class Comment(Base):
-    __tablename__ = 'comment'
-    id = Column(Integer, primary_key=True)
-    comment_text = Column(String(250))
-    author_id = Column(Integer, ForeignKey('user.id')) #Foreign Key of user.id
-    post_id = Column(Integer, ForeignKey('post.id')) #Foreign Key of post.id
 
-class Post(Base):
-    __tablename__ = "post"
+class Planets(Base):
+    __tablename__ = 'planets'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer,ForeignKey('user.id')) #Foreign key of user.id
-    comment = relationship('Comment')
-    post = relationship('Media')
+    name = Column(String(250))
+    gravity = Column(Integer)
+    terrain = Column(String(250))
+    population = Column(Integer)
+    
 
-class Media(Base):
-    __tablename__ = 'media'
+class Characters(Base):
+    __tablename__ = "characters"
     id = Column(Integer, primary_key=True)
-    type = Column(String(250))
-    url = Column(String(250))
-    post_id = Column(Integer,ForeignKey('post.id')) #Foreign key of post.id
+    name = Column(String(250))
+    height = Column(String(250))
+    mass = Column(String(250))
+    gender = Column(String(250))
+    vehicle_id = Column(Integer,ForeignKey('vehicles.id')) #Foreign key of vehicles.id
+
+
+class Vehicles(Base):
+    __tablename__ = 'vehicles'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250))
+    model = Column(String(250))
+    cost = Column(Integer)
+    max_speed = Column(Integer)
+    pilots = Column(Integer)
 
 
     def to_dict(self):
